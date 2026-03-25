@@ -1,0 +1,20 @@
+{
+  "name": "subtracker-mock-server",
+  "version": "1.0.0",
+  "description": "Mock API server for subscription tracker application",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17"
+  }
+}
