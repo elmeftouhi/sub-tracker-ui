@@ -1,42 +1,37 @@
-# Frontend Dockerfile for Coolify deployment
+# Frontend Dockerfile for Coolify deployment (Fixed)
 FROM node:18-alpine as build
 
 WORKDIR /app
 
-# Copy package files
+# Copy package files and install all dependencies 
 COPY package*.json ./
-
-# Install all dependencies (including devDependencies for build)
 RUN npm ci
 
-# Copy source code
+# Copy source code and build
 COPY . .
-
-# Build the application
 RUN npm run build
 
 # Production stage
 FROM nginx:alpine
 
-# Install envsubst for environment variable substitution
-RUN apk add --no-cache gettext
+# Install curl for health checks
+RUN apk add --no-cache curl
 
 # Copy built app to nginx
 COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copy nginx configuration template
+# Copy nginx configuration
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
 # Copy startup script
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Use configurable port (Coolify will set this)
-ENV PORT=3000
-EXPOSE $PORT
+# Expose port 80 (standard for containers)
+EXPOSE 80
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:$PORT/ || exit 1
+  CMD curl -f http://localhost/health || exit 1
 
 CMD ["/start.sh"]

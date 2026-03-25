@@ -1,21 +1,27 @@
 #!/bin/sh
 
-# Startup script for Coolify deployment
-# This script substitutes environment variables in nginx config and starts nginx
+# Simple startup script for Coolify deployment
+# Copy the nginx config and start nginx
 
-# Set default port if not provided
-export PORT=${PORT:-3000}
+echo "Setting up nginx configuration..."
 
-# Substitute environment variables in nginx config
-envsubst '${PORT}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf
+# Copy nginx config directly (no variable substitution needed)
+cp /etc/nginx/templates/default.conf.template /etc/nginx/conf.d/default.conf
 
 # Verify the config was created correctly
 if [ ! -f /etc/nginx/conf.d/default.conf ]; then
-    echo "Error: Failed to generate nginx configuration"
+    echo "Error: Failed to copy nginx configuration"
     exit 1
 fi
 
-echo "Starting nginx on port $PORT..."
+# Test nginx config
+nginx -t
+if [ $? -ne 0 ]; then
+    echo "Error: Invalid nginx configuration"
+    exit 1
+fi
+
+echo "Starting nginx on port 80..."
 
 # Start nginx
 exec nginx -g 'daemon off;'
