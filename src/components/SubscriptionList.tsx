@@ -6,7 +6,7 @@ import EditSubscriptionModal from './EditSubscriptionModal';
 
 const SubscriptionList: React.FC = () => {
   const { subscriptions, loading, updateSubscription, deleteSubscription } = useSubscriptions();
-  const [filter, setFilter] = useState<'all' | 'active' | 'paused' | 'canceled'>('active');
+  const [filter, setFilter] = useState<'active' | 'paused' | 'canceled'>('active');
   const [searchTerm, setSearchTerm] = useState('');
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   const [sortBy, setSortBy] = useState<'name' | 'price' | 'renewalDate'>('renewalDate');
@@ -28,7 +28,7 @@ const SubscriptionList: React.FC = () => {
 
   const filteredAndSortedSubscriptions = subscriptions
     .filter(sub => {
-      const matchesFilter = filter === 'all' || sub.status === filter;
+      const matchesFilter = sub.status === filter;
       const matchesSearch = sub.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            sub.category.toLowerCase().includes(searchTerm.toLowerCase());
       return matchesFilter && matchesSearch;
@@ -99,15 +99,63 @@ const SubscriptionList: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">My Subscriptions</h1>
-          <p className="text-gray-600">Manage your recurring subscriptions</p>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="space-y-4">
+        {/* Main Total Subscriptions Card */}
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md border border-blue-200 hover:shadow-lg transition-shadow">
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <p className="text-4xl font-bold text-blue-700 mb-2">{subscriptions.length}</p>
+              <p className="text-sm font-medium text-blue-700 mb-1">Total Subscriptions</p>
+              <p className="text-xs text-blue-600">All services</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-200 rounded-lg flex items-center justify-center">
+              <svg className="w-6 h-6 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+          </div>
         </div>
         
+        {/* Other Stats Cards */}
+        <div className="grid grid-cols-3 gap-4 lg:gap-6">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg shadow-sm border border-green-200 hover:shadow-md transition-shadow">
+            <p className="text-2xl font-bold text-green-700 mb-1">
+              {subscriptions.filter(s => s.status === 'active').length}
+            </p>
+            <p className="text-xs font-medium text-green-700 mb-1">Active</p>
+            <p className="text-xs text-green-600">Running</p>
+          </div>
+          
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 rounded-lg shadow-sm border border-yellow-200 hover:shadow-md transition-shadow">
+            <p className="text-2xl font-bold text-yellow-700 mb-1">
+              {subscriptions.filter(s => s.status === 'paused').length}
+            </p>
+            <p className="text-xs font-medium text-yellow-700 mb-1">Paused</p>
+            <p className="text-xs text-yellow-600">On hold</p>
+          </div>
+          
+          <div className="bg-gradient-to-br from-red-50 to-red-100 p-4 rounded-lg shadow-sm border border-red-200 hover:shadow-md transition-shadow">
+            <p className="text-2xl font-bold text-red-700 mb-1">
+              {subscriptions.filter(s => s.status === 'canceled').length}
+            </p>
+            <p className="text-xs font-medium text-red-700 mb-1">Canceled</p>
+            <p className="text-xs text-red-600">Ended</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Sort Options */}
+      <div className="flex justify-end">
         <div className="flex items-center space-x-2">
           <span className="text-sm text-gray-500">Sort by:</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-            className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="border border-gray-300 rounded-md px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="renewalDate">Renewal Date</option>
             <option value="name">Name</option>
@@ -133,44 +181,33 @@ const SubscriptionList: React.FC = () => {
             </span>
           </button>
           
-          <div className="relative">
-            <button
-              onClick={() => {
-                const otherStatuses = ['all', 'paused', 'canceled'] as const;
-                const nextFilter = otherStatuses.find(status => status !== filter) || 'all';
-                setFilter(nextFilter);
-              }}
-              className="px-4 py-2 rounded-md text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors flex items-center"
-            >
-              Other
-              <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-          </div>
-
-          {filter !== 'active' && (
-            <div className="flex space-x-2">
-              {(['all', 'paused', 'canceled'] as const).map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setFilter(status)}
-                  className={`px-4 py-2 rounded-md text-sm font-medium capitalize transition-colors ${
-                    filter === status
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {status}
-                  {status !== 'all' && (
-                    <span className="ml-1 text-xs">
-                      ({subscriptions.filter(s => s.status === status).length})
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
+          <button
+            onClick={() => setFilter('paused')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              filter === 'paused'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Paused
+            <span className="ml-1 text-xs">
+              ({subscriptions.filter(s => s.status === 'paused').length})
+            </span>
+          </button>
+          
+          <button
+            onClick={() => setFilter('canceled')}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              filter === 'canceled'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Canceled
+            <span className="ml-1 text-xs">
+              ({subscriptions.filter(s => s.status === 'canceled').length})
+            </span>
+          </button>
         </div>
         
         <div className="flex-1 max-w-md">
@@ -184,67 +221,6 @@ const SubscriptionList: React.FC = () => {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md border border-blue-200 hover:shadow-lg transition-shadow">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium text-blue-700">Total Subscriptions</p>
-            <div className="w-8 h-8 bg-blue-200 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-blue-700 mb-1">{subscriptions.length}</p>
-          <p className="text-xs text-blue-600">All services</p>
-        </div>
-        
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-md border border-green-200 hover:shadow-lg transition-shadow">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium text-green-700">Active</p>
-            <div className="w-8 h-8 bg-green-200 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-green-700 mb-1">
-            {subscriptions.filter(s => s.status === 'active').length}
-          </p>
-          <p className="text-xs text-green-600">Running</p>
-        </div>
-        
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-xl shadow-md border border-yellow-200 hover:shadow-lg transition-shadow">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium text-yellow-700">Paused</p>
-            <div className="w-8 h-8 bg-yellow-200 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-yellow-700 mb-1">
-            {subscriptions.filter(s => s.status === 'paused').length}
-          </p>
-          <p className="text-xs text-yellow-600">On hold</p>
-        </div>
-        
-        <div className="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-md border border-red-200 hover:shadow-lg transition-shadow">
-          <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium text-red-700">Canceled</p>
-            <div className="w-8 h-8 bg-red-200 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-red-700 mb-1">
-            {subscriptions.filter(s => s.status === 'canceled').length}
-          </p>
-          <p className="text-xs text-red-600">Ended</p>
-        </div>
-      </div>
-
       {/* Subscription Cards */}
       {filteredAndSortedSubscriptions.length === 0 ? (
         <div className="text-center py-12">
@@ -254,12 +230,12 @@ const SubscriptionList: React.FC = () => {
             </svg>
             <h3 className="mt-2 text-sm font-medium text-gray-900">No subscriptions found</h3>
             <p className="mt-1 text-sm text-gray-500">
-              {filter === 'all' && !searchTerm 
+              {subscriptions.length === 0 && !searchTerm 
                 ? 'Get started by adding your first subscription.'
                 : 'Try adjusting your filters or search term.'
               }
             </p>
-            {filter === 'all' && !searchTerm && (
+            {subscriptions.length === 0 && !searchTerm && (
               <div className="mt-6">
                 <a
                   href="/add"
