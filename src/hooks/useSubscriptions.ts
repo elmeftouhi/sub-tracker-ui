@@ -95,6 +95,7 @@ export const useSubscriptions = () => {
         paymentMethod: original.paymentMethod,
         notes: original.notes,
         status: 'active', // Reset status for new subscription
+        paymentHistory: [], // Start with empty payment history
       };
 
       return await addSubscription(duplicate);

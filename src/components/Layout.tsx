@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Bell, Plus } from 'lucide-react';
 import { useSubscriptions } from '../hooks/useSubscriptions';

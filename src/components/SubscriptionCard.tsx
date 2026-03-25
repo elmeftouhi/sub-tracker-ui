@@ -243,11 +243,11 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-500">Payment Status:</span>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                subscription.paid 
+                isCurrentPeriodPaid(subscription) 
                   ? 'bg-green-100 text-green-800' 
                   : 'bg-red-100 text-red-800'
               }`}>
-                {subscription.paid ? 'Paid' : 'Unpaid'}
+                {isCurrentPeriodPaid(subscription) ? 'Paid' : 'Unpaid'}
               </span>
             </div>
 

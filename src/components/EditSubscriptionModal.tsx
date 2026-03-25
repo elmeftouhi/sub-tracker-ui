@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { isCurrentPeriodPaid } from '../utils/paymentUtils';
 import type { Subscription } from '../types/subscription';
 
 interface EditSubscriptionModalProps {
@@ -58,7 +59,6 @@ const EditSubscriptionModal: React.FC<EditSubscriptionModalProps> = ({
         bankId: subscription.bankId || '',
         notes: subscription.notes || '',
         status: subscription.status,
-        paid: subscription.paid ?? true, // Default to paid if not set
         cancelReminder: subscription.cancelReminder || {
           enabled: false,
           daysAfterDue: 7
@@ -66,6 +66,9 @@ const EditSubscriptionModal: React.FC<EditSubscriptionModalProps> = ({
       });
     }
   }, [subscription]);
+
+  // Check current payment status based on subscription payment history
+  const isPaid = subscription ? isCurrentPeriodPaid(subscription) : false;
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -388,23 +391,23 @@ const EditSubscriptionModal: React.FC<EditSubscriptionModalProps> = ({
               Payment Status
             </label>
             <label className="flex items-center space-x-2 cursor-pointer">
-              <span className={`text-sm ${formData.paid ? 'text-gray-500' : 'text-gray-900'}`}>Unpaid</span>
+              <span className={`text-sm ${isPaid ? 'text-gray-500' : 'text-gray-900'}`}>Unpaid</span>
               <div className="relative">
                 <input
                   type="checkbox"
-                  checked={formData.paid ?? true}
+                  checked={isPaid ?? true}
                   onChange={(e) => setFormData(prev => ({ ...prev, paid: e.target.checked }))}
                   className="sr-only"
                 />
                 <div className={`w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${
-                  formData.paid ? 'bg-green-500' : 'bg-gray-300'
+                  isPaid ? 'bg-green-500' : 'bg-gray-300'
                 }`}>
                   <div className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-                    formData.paid ? 'translate-x-5' : 'translate-x-0'
+                    isPaid ? 'translate-x-5' : 'translate-x-0'
                   } mt-0.5 ml-0.5`}></div>
                 </div>
               </div>
-              <span className={`text-sm ${formData.paid ? 'text-gray-900' : 'text-gray-500'}`}>Paid</span>
+              <span className={`text-sm ${isPaid ? 'text-gray-900' : 'text-gray-500'}`}>Paid</span>
             </label>
           </div>
 

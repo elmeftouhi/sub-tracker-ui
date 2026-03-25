@@ -346,7 +346,11 @@ export const seedDatabase = async () => {
       ...sub,
       id: uuidv4(),
       currency: sub.currency || 'USD',
-      paid: Math.random() > 0.2,
+      paymentHistory: Math.random() > 0.2 ? [{
+        paidDate: new Date(),
+        billingPeriodStart: new Date(sub.createdAt || Date.now()),
+        billingPeriodEnd: new Date(sub.renewalDate || Date.now())
+      }] : [], // Randomly assign payment status
       updatedAt: new Date(),
       createdAt: new Date(sub.createdAt),
       renewalDate: new Date(sub.renewalDate || sub.nextBilling || sub.createdAt),
@@ -475,7 +479,11 @@ export const addCurrentYearTestData = async (): Promise<void> => {
         ...sub,
         id: uuidv4(),
         currency: sub.currency || 'USD',
-        paid: Math.random() > 0.3,
+        paymentHistory: Math.random() > 0.2 ? [{
+          paidDate: new Date(),
+          billingPeriodStart: new Date(sub.createdAt || Date.now()),
+          billingPeriodEnd: new Date(sub.renewalDate || Date.now())
+        }] : [], // Randomly assign payment status
         updatedAt: new Date(),
         createdAt: new Date(sub.createdAt),
         renewalDate: new Date(sub.renewalDate || sub.nextBilling || sub.createdAt),

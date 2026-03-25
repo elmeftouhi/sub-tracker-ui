@@ -24,7 +24,7 @@ interface StatusChange {
 const SubscriptionDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { subscriptions, updateSubscription, deleteSubscription, markAsPaid, markAsUnpaid } = useSubscriptions();
+  const { subscriptions, deleteSubscription, markAsPaid, markAsUnpaid } = useSubscriptions();
   const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'analytics'>('overview');
   
   // Confirmation dialog state

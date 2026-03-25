@@ -23,7 +23,7 @@ export const migratePaymentMethods = async () => {
         }
         
         return db.subscriptions.update(sub.id, {
-          paymentMethod: newPaymentMethod,
+          paymentMethod: newPaymentMethod as "cash" | "credit-card" | "bank-transfer",
           updatedAt: new Date()
         });
       }

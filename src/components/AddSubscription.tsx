@@ -31,9 +31,7 @@ const AddSubscription: React.FC = () => {
     currency: 'USD',
     billingCycle: 'monthly',
     renewalDate: new Date(),
-    status: 'active',
-    paid: true,
-    cancelReminder: {
+    status: 'active',    paymentHistory: [],    cancelReminder: {
       enabled: false,
       daysAfterDue: 7
     },
@@ -349,23 +347,30 @@ const AddSubscription: React.FC = () => {
               Payment Status
             </label>
             <label className="flex items-center space-x-2 cursor-pointer">
-              <span className={`text-sm ${formData.paid ? 'text-gray-500' : 'text-gray-900'}`}>Unpaid</span>
+              <span className={`text-sm ${formData.paymentHistory.length > 0 ? 'text-gray-500' : 'text-gray-900'}`}>Unpaid</span>
               <div className="relative">
                 <input
                   type="checkbox"
-                  checked={formData.paid}
-                  onChange={(e) => setFormData(prev => ({ ...prev, paid: e.target.checked }))}
+                  checked={formData.paymentHistory.length > 0}
+                  onChange={(e) => {
+                    setFormData(prev => ({
+                      ...prev, 
+                      paymentHistory: e.target.checked 
+                        ? [{ paidDate: new Date(), billingPeriodStart: new Date(), billingPeriodEnd: new Date() }] 
+                        : []
+                    }));
+                  }}
                   className="sr-only"
                 />
                 <div className={`w-11 h-6 rounded-full transition-colors duration-200 ease-in-out relative ${
-                  formData.paid ? 'bg-green-500' : 'bg-gray-300'
+                  formData.paymentHistory.length > 0 ? 'bg-green-500' : 'bg-gray-300'
                 }`}>
                   <div className={`absolute w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out ${
-                    formData.paid ? 'translate-x-5' : 'translate-x-0'
+                    formData.paymentHistory.length > 0 ? 'translate-x-5' : 'translate-x-0'
                   } top-0.5 left-0.5`}></div>
                 </div>
               </div>
-              <span className={`text-sm ${formData.paid ? 'text-gray-900' : 'text-gray-500'}`}>Paid</span>
+              <span className={`text-sm ${formData.paymentHistory.length > 0 ? 'text-gray-900' : 'text-gray-500'}`}>Paid</span>
             </label>
           </div>
 

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useSubscriptions } from '../hooks/useSubscriptions';
 import { formatCurrency, calculateMonthlyEquivalent, isRenewalSoon } from '../utils/helpers';
+import { isCurrentPeriodPaid } from '../utils/paymentUtils';
 
 const Dashboard: React.FC = () => {
   const { subscriptions, loading } = useSubscriptions();
@@ -16,7 +17,7 @@ const Dashboard: React.FC = () => {
     const yearlyTotal = monthlyTotal * 12;
 
     const upcomingRenewals = activeSubscriptions.filter(sub => 
-      isRenewalSoon(new Date(sub.renewalDate)) && !sub.paid // Only unpaid subscriptions
+      isRenewalSoon(new Date(sub.renewalDate)) && !isCurrentPeriodPaid(sub) // Only unpaid subscriptions
     ).sort((a, b) => 
       new Date(a.renewalDate).getTime() - new Date(b.renewalDate).getTime()
     );
