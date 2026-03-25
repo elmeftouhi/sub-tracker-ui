@@ -1,0 +1,45 @@
+# Simple Dockerfile for Coolify (standalone deployment)
+FROM node:18-alpine as build
+
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Copy source code and build
+COPY . .
+RUN npm run build
+
+# Production stage with nginx
+FROM nginx:alpine
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Copy built files
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Create nginx config that works with dynamic port
+RUN echo 'server { \
+    listen $PORT; \
+    server_name _; \
+    root /usr/share/nginx/html; \
+    index index.html; \
+    location / { try_files $uri $uri/ /index.html; } \
+    location /health { return 200 "healthy\\n"; add_header Content-Type text/plain; } \
+    gzip on; \
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript; \
+}' > /etc/nginx/conf.d/default.conf.template
+
+# Create startup script
+RUN echo '#!/bin/sh\nenvsubst '"'"'$PORT'"'"' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf\nexec nginx -g "daemon off;"' > /start.sh && chmod +x /start.sh
+
+# Default port
+ENV PORT=3000
+EXPOSE $PORT
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 CMD curl -f http://localhost:$PORT/health || exit 1
+
+CMD ["/start.sh"]

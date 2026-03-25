@@ -1,42 +1,19 @@
-# Development Docker Compose
-# For production deployment, use Coolify with the Dockerfile directly
-
 version: '3.8'
 
 services:
-  # Frontend Service (Production-like build)
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: subtracker-frontend
     ports:
-      - "8080:3000"
+      - "${PORT:-3000}:${PORT:-3000}"
     environment:
-      - PORT=3000
-      - NODE_ENV=production
-    restart: unless-stopped
-
-  # Mock Server Service (Optional - for API testing)
-  mock-server:
-    build:
-      context: ./mock-server
-      dockerfile: Dockerfile
-    container_name: subtracker-api
-    ports:
-      - "3001:3001"
-    environment:
+      - PORT=${PORT:-3000}
       - NODE_ENV=production
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-3000}/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
-    profiles:
-      - "with-api"  # Only start with: docker-compose --profile with-api up
-
-networks:
-  default:
-    name: subtracker-network
