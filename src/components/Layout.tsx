@@ -117,6 +117,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="flex items-center">
               <Link to="/" className="text-xl font-bold text-blue-600">
                 SubTrack
+                <span className="text-xs text-gray-500 ml-1">v1.0</span>
               </Link>
             </div>
             
@@ -394,7 +395,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               className="bg-white rounded-lg max-w-md w-full max-h-[80vh] overflow-hidden"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+              <div className="py-2 px-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 className="text-lg font-medium text-gray-900">
                   Notifications {notificationCount > 0 && `(${notificationCount})`}
                 </h3>
@@ -468,6 +469,20 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         </div>
                       </div>
                     ))}
+                    
+                    {/* View All Notifications Link */}
+                    <div className="pt-3 border-t border-gray-200">
+                      <Link
+                        to="/notifications"
+                        onClick={() => {
+                          setIsNotificationOpen(false);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="block w-full text-center bg-blue-600 text-white px-4 py-3 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                      >
+                        View All Notifications
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>

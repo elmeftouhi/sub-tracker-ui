@@ -104,8 +104,8 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-gray-500">Active Subscriptions</h3>
-            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+            <h3 className="text-sm font-medium text-gray-500">Active</h3>
+            <div className="w-8 h-8 bg-blue-100 rounded-lg hidden sm:flex items-center justify-center">
               <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -118,7 +118,7 @@ const Dashboard: React.FC = () => {
         <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-md border border-green-200 hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-medium text-green-700">Monthly Total</h3>
-            <div className="w-8 h-8 bg-green-200 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-green-200 rounded-lg hidden sm:flex items-center justify-center">
               <svg className="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
               </svg>
@@ -131,7 +131,7 @@ const Dashboard: React.FC = () => {
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-md border border-blue-200 hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-sm font-medium text-blue-700">Yearly Projection</h3>
-            <div className="w-8 h-8 bg-blue-200 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-blue-200 rounded-lg hidden sm:flex items-center justify-center">
               <svg className="w-4 h-4 text-blue-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
@@ -143,8 +143,8 @@ const Dashboard: React.FC = () => {
         
         <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-xl shadow-md border border-orange-200 hover:shadow-lg transition-shadow relative">
           <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-medium text-orange-700">Renewals This Week</h3>
-            <div className="w-8 h-8 bg-orange-200 rounded-lg flex items-center justify-center">
+            <h3 className="text-sm font-medium text-orange-700">This Week</h3>
+            <div className="w-8 h-8 bg-orange-200 rounded-lg hidden sm:flex items-center justify-center">
               <svg className="w-4 h-4 text-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -187,7 +187,7 @@ const Dashboard: React.FC = () => {
       {/* Upcoming Renewals */}
       <div className="bg-white rounded-lg shadow">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-medium text-gray-900">Unpaid Upcoming Renewals (Next 7 Days)</h2>
+          <h2 className="text-lg font-medium text-gray-900">Unpaid Upcoming Renewals</h2>
         </div>
         <div className="divide-y divide-gray-200">
           {stats.upcomingRenewals.length === 0 ? (

@@ -115,12 +115,12 @@ const AddSubscription: React.FC = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-6 py-4 border-b border-gray-200">
+      <div className="px-3 bg-white shadow rounded-lg">
+        <div className="py-4 border-b border-gray-200">
           <h1 className="text-xl font-medium text-gray-900">Add New Subscription</h1>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -158,58 +158,82 @@ const AddSubscription: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                Price *
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Price & Currency *
               </label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                required
-                min="0"
-                step="0.01"
-                value={formData.price}
-                onChange={handleInputChange}
-                className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.price ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'
-                }`}
-                placeholder="9.99"
-              />
+              <div className="flex space-x-2">
+                <div className="flex-1">
+                  <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    required
+                    min="0"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.price ? 'border-red-500 focus:border-red-500' : 'border-gray-300 focus:border-blue-500'
+                    }`}
+                    placeholder="9.99"
+                  />
+                </div>
+                <div className="w-20">
+                  <select
+                    id="currency"
+                    name="currency"
+                    value={formData.currency}
+                    onChange={handleInputChange}
+                    className="w-full border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
+                  >
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="CAD">CAD</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             <div>
-              <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
-                Currency
-              </label>
-              <select
-                id="currency"
-                name="currency"
-                value={formData.currency}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="CAD">CAD</option>
-              </select>
-            </div>
-
-            <div>
-              <label htmlFor="billingCycle" className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Billing Cycle
               </label>
-              <select
-                id="billingCycle"
-                name="billingCycle"
-                value={formData.billingCycle}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-                <option value="custom">Custom</option>
-              </select>
+              <div className="space-y-2">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="billingCycle"
+                    value="monthly"
+                    checked={formData.billingCycle === 'monthly'}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <span className="ml-3 text-sm text-gray-700">Monthly</span>
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="billingCycle"
+                    value="yearly"
+                    checked={formData.billingCycle === 'yearly'}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <span className="ml-3 text-sm text-gray-700">Yearly</span>
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="billingCycle"
+                    value="custom"
+                    checked={formData.billingCycle === 'custom'}
+                    onChange={handleInputChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <span className="ml-3 text-sm text-gray-700">Custom</span>
+                </label>
+              </div>
             </div>
 
             {formData.billingCycle === 'custom' && (
